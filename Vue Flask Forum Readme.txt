@@ -16,7 +16,7 @@ If you want to change the port number for the localhost, go to the following pat
 (localhost uses port number 5000 by default)
 
 VUE JS FRONTEND INSTRUCTIONS:
-To run the local server of the Vue js website, start with going into command prompt:
+To run the local server of the Vue js website do the following (instructions for windows OS only), start with going into command prompt:
 
 1. Go to the following path: vue_forum_flask (folder) > vue_frontend (folder)
 2. Enter 'npm run serve' to run the local server
