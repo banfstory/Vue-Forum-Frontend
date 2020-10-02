@@ -21,7 +21,7 @@ vue_frontend (folder) > src (folder) > main.js. Look for the code 'domain_name_a
 VUE JS FRONTEND INSTRUCTIONS:
 To run the local server of the Vue js website do the following (instructions for windows OS only), start with going into command prompt:
 
-1. Go to the vue_frontend folder
+1. Go to the 'vue_frontend' folder
 2. Enter 'npm run serve -- --port 8080' to run the local server on port 8080 (you can change the port number to whatever you want)
 
 
