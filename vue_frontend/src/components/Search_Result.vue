@@ -38,7 +38,7 @@ export default {
 			this.loading = false;
 			this.query = this.$route.query.q;
 			if(this.query.trim().length == 0) {
-				this.$router.push('/home');
+				this.$router.push('/');
 			}
 			let page_num = this.$route.query.page ? this.$route.query.page : 1;
 			axios.get(`${this.domain_name_api}forums?query=${this.query}&page=${page_num}`).then(response => {

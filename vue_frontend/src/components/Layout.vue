@@ -3,7 +3,7 @@
     <header>
       <div id="top-nav" class="flex space-between">
         <div id="logo" class="flex">
-          <router-link to="/home">
+          <router-link to="/">
             <i class="fab fa-forumbee"></i>
             <span>Flask Forum</span>
           </router-link>
@@ -107,7 +107,7 @@ export default {
       bus.$emit('erase_token', null);
       bus.$emit('erase_user', {});
       bus.$emit('show_hide_notify', 'Logged out');
-      this.$router.push('/home').catch(() => {});
+      this.$router.push('/').catch(() => {});
     },
     toggle_profile() {  /* popup to show navigation links when user profile image is clicked */
       this.profile_nav = !this.profile_nav;

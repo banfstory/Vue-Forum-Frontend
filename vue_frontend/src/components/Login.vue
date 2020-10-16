@@ -54,7 +54,7 @@ export default {
           axios.get(`${this.domain_name_api}user_followers`, { headers: { 'x-access-token' : token } }).then(response => {
             bus.$emit('set_followers', response.data);
           });
-          this.$router.push('/home').catch(() => {});
+          this.$router.push('/').catch(() => {});
           bus.$emit('show_hide_notify', 'Login successful');
           document.body.style = "overflow: scroll";
           this.close_popup();

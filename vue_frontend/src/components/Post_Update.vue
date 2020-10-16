@@ -52,7 +52,7 @@ export default {
   },
   created() {
     if(!this.token) {
-			this.$router.push('/home');
+			this.$router.push('/');
 		}
     this.post_results();
   },

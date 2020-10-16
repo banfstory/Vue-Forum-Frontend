@@ -48,7 +48,11 @@ export default {
     }
   },
   created() {
-    this.forum_result();
+    if(!this.token) {
+			this.$router.push('/');
+		} else {
+      this.forum_result();
+    }
   },
   watch: {
 		$route() {

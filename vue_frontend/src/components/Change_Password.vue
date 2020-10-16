@@ -56,7 +56,7 @@ export default {
         this.password_invalid = true;
       } else {
         axios.put(`${this.domain_name_api}account_pass`, {'old_password' : old_password, 'new_password' : new_password}, { headers: { 'x-access-token' : this.token } }).then(() => {
-          this.$router.push(`/home`);
+          this.$router.push(`/`);
           bus.$emit('show_hide_notify', 'Account password changed');
         }).catch(err => {
           if(err.response.data.error) {
@@ -68,7 +68,7 @@ export default {
   },
   created() {
 		if(!this.token) {
-			this.$router.push('/home');
+			this.$router.push('/');
 		}
   },
   computed: {

@@ -11,7 +11,7 @@ import Change_Password from "./components/Change_Password.vue";
 import Forum_Create_Post from "./components/Forum_Create_Post.vue";
 
 export default [
-  { path:'/home', component:Home, meta: { title: `Home Page` } },
+  { path:'/', component:Home, meta: { title: `Home Page` } },
   { path:'/account', component:Account, meta: { title: `Account` } },
   { path:'/create_forum', component:Create_Forum, meta: { title: `Create Forum` } },
   { path:'/search', component:Search_Result, meta: { title: `Search Results` } },
