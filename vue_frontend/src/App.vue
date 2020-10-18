@@ -11,8 +11,7 @@
 import axios from 'axios';
 import Layout from "./components/Layout.vue";
 import {bus} from './main.js';
-
-let jwtdecode = require('jwt-decode');
+import jwtdecode from "jwt-decode";
 
 export default {
   components: {
@@ -33,11 +32,11 @@ export default {
         let arr_token = document.cookie.split(';').map(cookie => cookie.split('='));
         this.token = arr_token[0][1];
         let user = jwtdecode(this.token);
-        axios.get(`http://127.0.0.1:5000/api/user?id=${user.id}`).then(response => {
+        axios.get(`${this.domain_name_api}user?id=${user.id}`).then(response => {
           this.user = response.data.user;
           bus.$emit('init_user', this.user);
           bus.$emit('init_token', this.token);
-          axios.get('http://127.0.0.1:5000/api/user_followers', { headers: { 'x-access-token' : this.token } }).then(response => {
+          axios.get(`${this.domain_name_api}user_followers`, { headers: { 'x-access-token' : this.token } }).then(response => {
             bus.$emit('init_followers', response.data);
           });  
         });

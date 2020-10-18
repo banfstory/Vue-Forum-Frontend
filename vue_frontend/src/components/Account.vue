@@ -94,7 +94,6 @@ export default {
 		if(!this.token) {
 			this.$router.push('/');
 		}
-
 	},
 	mixins: [imageMixin, validationMixin]
 };

@@ -23,8 +23,8 @@
 <script>
 import axios from 'axios'
 import {bus} from '../main.js';
+import jwtdecode from "jwt-decode";
 
-let jwtdecode = require('jwt-decode');
 //https://www.npmjs.com/package/jwt-decode
 export default {
   data() {
