@@ -171,6 +171,7 @@ export default {
 }
 
 .comment-header-data {
+  font-size: 0.9rem;
   margin-left: 0.5rem;
   line-height: 40px;
 }
