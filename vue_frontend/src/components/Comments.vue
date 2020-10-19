@@ -21,7 +21,7 @@
                 <div> {{ post.num_of_comments }} <template> Comments </template></div>
               </div>
               <div id="user-post">
-                <div id="modify-post">
+                <div v-if="token && post.user.id == user.id" id="modify-post">
                   <router-link :to="{ path: `/forum/${post.id}/update_post`}"><button> Update </button></router-link>
                   <button v-on:click="popup_menu(true)" class="post-delete"> Delete </button>
                 </div>
