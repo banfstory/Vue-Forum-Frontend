@@ -46,10 +46,9 @@ export default {
     change_user_image() {
 			let image = this.$refs['user_picture'].files[0];
 			let form_data = new FormData();
-			form_data.append("image", image);
-			form_data.append("test", "resulted test");
-			console.log(form_data.get('image'));
-			axios.post(`${this.domain_name_api}update_user_image`, form_data, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+			form_data.append("file", image);
+			console.log(form_data.get('file'));
+			axios.post(`${this.domain_name_api}update_user_image`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
 				console.log(response);
 			});
 		},

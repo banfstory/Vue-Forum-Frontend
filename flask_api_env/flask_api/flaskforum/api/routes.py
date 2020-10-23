@@ -6,6 +6,9 @@ import jwt
 from datetime import datetime, timedelta
 from functools import wraps
 from flask_login import current_user
+from PIL import Image
+import os
+import secrets
 
 """
 POSTMAN SETTINGS
@@ -535,10 +538,29 @@ def get_forum_image(file):
     return send_file(current_app.root_path + '/static/forum_pics/' + file)
 
 @api.route('/api/update_user_image', methods=['POST'])
-def upload_image():
-    image = request.form
-    return image
+@token_required
+def upload_image(c_user):
+    image = request.files['file']
+    file_name = save_image(image)
+    if file_name is None:
+        return jsonify({'message': 'Invalid request'}), 400
+    c_user.display_picture = file_name
+    db.session.commit()
+    return jsonify({'filename': image.filename})
 
+def save_image(image):
+    _,ext = os.path.splitext(image.filename)
+    if ext != '.jpg' and ext != '.png':
+        return None
+    name = secrets.token_hex(10)
+    file_name = name + ext
+    file_path = os.path.join(app.root_path, 'static/display_pics', file_name)
+    size = (300, 300)
+    i = Image.open(image)
+    i.thumbnail(size)
+    i.save(file_path)
+    return file_name
+    
 #https://www.youtube.com/watch?v=6WruncSoCdI
 #https://stackoverflow.com/questions/43013858/how-to-post-a-file-from-a-form-with-axios
 
