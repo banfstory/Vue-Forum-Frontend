@@ -9,7 +9,7 @@
             <div> Forum </div>
           </div>
         </div>
-        <button> Remove Forum Picture </button>
+        <button v-if="forum.display_picture!='default.png'" v-on:click="remove_forum_image()"> Remove Forum Picture </button>
         <h2> Update Account </h2>
         <label> About </label>
         <textarea v-model="forum.about" type="text"> </textarea>
@@ -36,6 +36,11 @@ export default {
     }
   },
   methods: {
+    remove_forum_image() {
+			axios.delete(`${this.domain_name_api}remove_forum_picture/${this.forum.id}`, { headers: { 'x-access-token' : this.token } }).then(() => {
+				this.forum.display_picture = 'default.png';
+			});
+		},
     change_forum_image() {
 			let image = this.$refs['forum_picture'].files[0];
 			let form_data = new FormData();

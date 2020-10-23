@@ -9,7 +9,7 @@
 								<div> {{ user.email }} </div>
 						</div>
 				</div>
-				<button> Remove Profile Picture </button>
+				<button v-if="user.display_picture!='default.png'" v-on:click="remove_user_image()"> Remove Profile Picture </button>
 				<h2> Update Account </h2>
 				<label> Username </label>
 				<input type="text" v-model="input.username">
@@ -43,6 +43,11 @@ export default {
 		}
 	},
   methods: {
+		remove_user_image() {
+			axios.delete(`${this.domain_name_api}remove_user_picture`, { headers: { 'x-access-token' : this.token } }).then(() => {
+				this.user.display_picture = 'default.png';
+			});
+		},
     change_user_image() {
 			let image = this.$refs['user_picture'].files[0];
 			let form_data = new FormData();

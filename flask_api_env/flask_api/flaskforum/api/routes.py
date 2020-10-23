@@ -169,6 +169,33 @@ def follow_forum(c_user, id):
     result  = forum_schema.dump(forum)
     return jsonify({'forum' : result})
 
+@api.route('/api/update_forum_image/<int:id>', methods=['POST'])
+@token_required
+def upload_forum_image(c_user, id):
+    forum = Forum.query.filter_by(id=id, owner_id=c_user.id).first()
+    if forum is None:
+        return jsonify({'message': 'Invalid request'}), 400
+    image = request.files['file']
+    file_name = save_image(image, 'forum_pics', forum.display_picture)
+    if file_name is None:
+        return jsonify({'message': 'Invalid request'}), 400
+    if file_name != forum.display_picture:
+        forum.display_picture = file_name
+        db.session.commit()
+    return jsonify({'filename': file_name})
+
+@api.route('/api/update_user_image', methods=['POST'])
+@token_required
+def upload_user_image(c_user):
+    image = request.files['file']
+    file_name = save_image(image, 'user_pics', c_user.display_picture)
+    if file_name is None:
+        return jsonify({'message': 'Invalid request'}), 400
+    if file_name != c_user.display_picture:
+        c_user.display_picture = file_name
+        db.session.commit()
+    return jsonify({'filename': image.file_name})
+
 # PUT METHODS
 @api.route('/api/post/<int:id>', methods=['PUT'])
 @token_required
@@ -332,6 +359,29 @@ def unfollow_forum(c_user, id):
     db.session.commit()
     result  = forum_schema.dump(forum)
     return jsonify({'forum' : result})
+
+@api.route('/api/remove_forum_picture/<int:id>', methods=['DELETE'])
+@token_required
+def remove_forum_image(c_user, id):
+    forum = Forum.query.filter_by(id=id, owner_id=c_user.id).first()
+    if forum is None or forum.display_picture == 'default.png':
+        return jsonify({'message': 'Invalid request'}), 400
+    file_path = os.path.join(app.root_path, f'static/forum_pics', forum.display_picture)
+    os.remove(file_path)
+    forum.display_picture = 'default.png'
+    db.session.commit()
+    return jsonify({'status':'Forum image has been removed'})
+
+@api.route('/api/remove_user_picture', methods=['DELETE'])
+@token_required
+def remove_user_image(c_user):
+    if c_user.display_picture == 'default.png':
+        return jsonify({'message': 'Invalid request'}), 400
+    file_path = os.path.join(app.root_path, f'static/user_pics', c_user.display_picture)
+    os.remove(file_path)
+    c_user.display_picture = 'default.png'
+    db.session.commit()
+    return jsonify({'status':'User image has been removed'})
 
 # GET METHODS
 @api.route('/api/posts', methods=['GET'])
@@ -537,42 +587,26 @@ def get_user_image(file):
 def get_forum_image(file):
     return send_file(current_app.root_path + '/static/forum_pics/' + file)
 
-@api.route('/api/update_forum_image/<int:id>', methods=['POST'])
-@token_required
-def upload_forum_image(c_user, id):
-    forum = Forum.query.filter_by(id=id, owner_id=c_user.id).first()
-    if forum is None:
-        return jsonify({'message': 'Invalid request'}), 400
-    image = request.files['file']
-    file_name = save_image(image, 'forum_pics')
-    if file_name is None:
-        return jsonify({'message': 'Invalid request'}), 400
-    forum.display_picture = file_name
-    db.session.commit()
-    return jsonify({'filename': image.filename})
-
-@api.route('/api/update_user_image', methods=['POST'])
-@token_required
-def upload_user_image(c_user):
-    image = request.files['file']
-    file_name = save_image(image, 'user_pics')
-    if file_name is None:
-        return jsonify({'message': 'Invalid request'}), 400
-    c_user.display_picture = file_name
-    db.session.commit()
-    return jsonify({'filename': image.filename})
-
-def save_image(image, path_name):
+# FUNCTIONS
+def save_image(image, path_name, prev_path):
     _,ext = os.path.splitext(image.filename)
     if ext != '.jpg' and ext != '.png':
         return None
-    name = secrets.token_hex(10)
-    file_name = name + ext
-    file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
+    file_name = ''
+    file_path = ''
+    if prev_path == 'default.png':
+        name = secrets.token_hex(10)
+        file_name = name + ext
+        file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
+    else:
+        file_name = prev_path
+        file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
     size = (300, 300)
     i = Image.open(image)
     i.thumbnail(size)
     i.save(file_path)
     return file_name
+    
+
 
 
