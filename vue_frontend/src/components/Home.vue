@@ -52,6 +52,8 @@ export default {
 				this.posts = response.data.posts;
 				this.details = response.data.details;
 				this.loading = true;
+			}).catch(() => {
+				this.$router.push('/error404');
 			});
 		}
 	},

@@ -523,7 +523,7 @@ def api_get_forum():
         param['owner_id'] = owner_id
     forum = Forum.query.filter_by(**param).first()
     if forum is None:
-        return jsonify({'message': 'Forum not found'})
+        return jsonify({'message': 'Forum not found'}), 400
     user = user_schema.dump(forum.owner)
     return jsonify({'forum': {'id': forum.id, 'name': forum.name, 'date_created': forum.date_created, 'about': forum.about, 'display_picture': forum.display_picture, 'followers': forum.followers, 'num_of_post': forum.num_of_post, 'user': user}})
 

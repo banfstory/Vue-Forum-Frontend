@@ -96,6 +96,8 @@ export default {
         axios.get(`${this.domain_name_api}posts?forum_id=${this.forum.id}&page=${page_num}`).then(response => {
           this.posts = response.data.posts;
           this.details  = response.data.details;
+        }).catch(() => {
+          this.$router.push('/error404');
         });
         if(this.token) {
           axios.get(`${this.domain_name_api}user_follower?forum_id=${this.forum.id}`, { headers: { 'x-access-token' : this.token } }).then(response => {
@@ -110,6 +112,8 @@ export default {
           this.owner_forum = false;
         }
         this.loading = true;
+      }).catch(() => {
+        this.$router.push('/error404');
       });
     },
     follow_forum() {

@@ -44,6 +44,8 @@ export default {
       let name = this.$route.params.name;
       axios.get(`${this.domain_name_api}forum?name=${name}`).then(response => {
         this.forum = response.data.forum;
+      }).catch(() => {
+        this.$router.push('/error404');
       });
     }
   },

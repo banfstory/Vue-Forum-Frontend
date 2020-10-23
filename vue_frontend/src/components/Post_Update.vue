@@ -35,6 +35,8 @@ export default {
       axios.get(`${this.domain_name_api}post/${this.id}`).then(response => {
         this.post = response.data.post;
         this.loading = true;
+      }).catch(() => {
+        this.$router.push('/error404');
       });
     },
     update_post() {

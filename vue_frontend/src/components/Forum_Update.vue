@@ -68,6 +68,8 @@ export default {
       axios.get(`${this.domain_name_api}forum?name=${this.query}`).then(response => {
         this.forum = response.data.forum;
         this.loading = true;
+      }).catch(() => {
+         this.$router.push('/error404');
       });
     }
   },
