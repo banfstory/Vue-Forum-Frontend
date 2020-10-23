@@ -176,6 +176,8 @@ def upload_forum_image(c_user, id):
     if forum is None:
         return jsonify({'message': 'Invalid request'}), 400
     image = request.files['file']
+    if image is None:
+        return jsonify({'message': 'Invalid request'}), 400
     file_name = save_image(image, 'forum_pics', forum.display_picture)
     if file_name is None:
         return jsonify({'message': 'Invalid request'}), 400
@@ -188,13 +190,15 @@ def upload_forum_image(c_user, id):
 @token_required
 def upload_user_image(c_user):
     image = request.files['file']
+    if image is None:
+        return jsonify({'message': 'Invalid request'}), 400
     file_name = save_image(image, 'user_pics', c_user.display_picture)
     if file_name is None:
         return jsonify({'message': 'Invalid request'}), 400
     if file_name != c_user.display_picture:
         c_user.display_picture = file_name
         db.session.commit()
-    return jsonify({'filename': image.file_name})
+    return jsonify({'filename': file_name})
 
 # PUT METHODS
 @api.route('/api/post/<int:id>', methods=['PUT'])

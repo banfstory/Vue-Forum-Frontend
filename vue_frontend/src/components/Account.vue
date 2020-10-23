@@ -46,16 +46,22 @@ export default {
 		remove_user_image() {
 			axios.delete(`${this.domain_name_api}remove_user_picture`, { headers: { 'x-access-token' : this.token } }).then(() => {
 				this.user.display_picture = 'default.png';
+				bus.$emit('show_hide_notify', 'User picture removed');
 			});
 		},
     change_user_image() {
 			let image = this.$refs['user_picture'].files[0];
-			let form_data = new FormData();
-			form_data.append("file", image);
-			console.log(form_data.get('file'));
-			axios.post(`${this.domain_name_api}update_user_image`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
-				console.log(response);
-			});
+			if(image) {
+				let form_data = new FormData();
+				form_data.append("file", image);
+				console.log(form_data.get('file'));
+				axios.post(`${this.domain_name_api}update_user_image`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
+					let picture = response.data.filename
+					if(picture) {
+						this.user.display_picture = picture
+					}
+				})
+			}
 		},
 		update_details() {
 			this.resetValidation();

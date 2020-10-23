@@ -38,13 +38,13 @@ export default {
         this.forum_char_error = true;
       } else {
         axios.post(`${this.domain_name_api}forum`, {'name' : name, 'about' : about}, { headers: { 'x-access-token' : this.token } }).then(() => {
-          this.$router.push(`/`);
+          this.$router.push('/');
           bus.$emit('show_hide_notify', 'Forum created');
         }).catch(err => {
           if(err.response.data.error) {
             this.forum_exist_error = true;
           }
-        });
+        })
       }
     }
   },

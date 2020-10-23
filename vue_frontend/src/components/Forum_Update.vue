@@ -38,21 +38,27 @@ export default {
   methods: {
     remove_forum_image() {
 			axios.delete(`${this.domain_name_api}remove_forum_picture/${this.forum.id}`, { headers: { 'x-access-token' : this.token } }).then(() => {
-				this.forum.display_picture = 'default.png';
+        this.forum.display_picture = 'default.png';
+        bus.$emit('show_hide_notify', 'Forum picture removed');
 			});
 		},
     change_forum_image() {
-			let image = this.$refs['forum_picture'].files[0];
-			let form_data = new FormData();
-			form_data.append("file", image);
-			console.log(form_data.get('file'));
-			axios.post(`${this.domain_name_api}update_forum_image/${this.forum.id}`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
-				console.log(response);
-			});
+      let image = this.$refs['forum_picture'].files[0];
+      if(image) {
+        let form_data = new FormData();
+        form_data.append("file", image);
+        console.log(form_data.get('file'));
+        axios.post(`${this.domain_name_api}update_forum_image/${this.forum.id}`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
+          let picture = response.data.filename
+          if(picture) {
+            this.forum.display_picture = picture;
+          }
+        })
+      }
 		},
     update_forum() {
-      axios.put(`${this.domain_name_api}forum/${this.forum.id}`, {'about' : this.forum.about}, { headers: { 'x-access-token' : this.token } }).then(() => {
-        this.$router.push(`/forum/${this.query}`);
+      axios.put(`${this.domain_name_api}forum/${this.forum.id}`, {'about' : this.forum.about}, { headers: { 'x-access-token' : this.token } }).then(response => {
+        this.about = response.data.forum.about;
         bus.$emit('show_hide_notify', 'Forum updated');
       });
     },
