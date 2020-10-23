@@ -20,7 +20,7 @@
 				<div v-if="email_invalid_error" class="error-input">Invalid email address</div>
 				<label> Image Upload </label>
 				<input type="file" name="image_file" ref="user_picture">
-				<button v-on:click="update_details()" class="form-submit-g"> Update </button>
+				<button v-on:click="update_details(); change_user_image()" class="form-submit-g"> Update </button>
 			</div>
 		</div>
 	</div>
