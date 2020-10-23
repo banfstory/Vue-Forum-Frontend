@@ -531,36 +531,48 @@ def autocomplete():
 
 @api.route('/api/user/image/<string:file>', methods=['GET'])
 def get_user_image(file):
-    return send_file(current_app.root_path + '/static/display_pics/' + file)
+    return send_file(current_app.root_path + '/static/user_pics/' + file)
 
 @api.route('/api/forum/image/<string:file>', methods=['GET'])
 def get_forum_image(file):
     return send_file(current_app.root_path + '/static/forum_pics/' + file)
 
+@api.route('/api/update_forum_image/<int:id>', methods=['POST'])
+@token_required
+def upload_forum_image(c_user, id):
+    forum = Forum.query.filter_by(id=id, owner_id=c_user.id).first()
+    if forum is None:
+        return jsonify({'message': 'Invalid request'}), 400
+    image = request.files['file']
+    file_name = save_image(image, 'forum_pics')
+    if file_name is None:
+        return jsonify({'message': 'Invalid request'}), 400
+    forum.display_picture = file_name
+    db.session.commit()
+    return jsonify({'filename': image.filename})
+
 @api.route('/api/update_user_image', methods=['POST'])
 @token_required
-def upload_image(c_user):
+def upload_user_image(c_user):
     image = request.files['file']
-    file_name = save_image(image)
+    file_name = save_image(image, 'user_pics')
     if file_name is None:
         return jsonify({'message': 'Invalid request'}), 400
     c_user.display_picture = file_name
     db.session.commit()
     return jsonify({'filename': image.filename})
 
-def save_image(image):
+def save_image(image, path_name):
     _,ext = os.path.splitext(image.filename)
     if ext != '.jpg' and ext != '.png':
         return None
     name = secrets.token_hex(10)
     file_name = name + ext
-    file_path = os.path.join(app.root_path, 'static/display_pics', file_name)
+    file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
     size = (300, 300)
     i = Image.open(image)
     i.thumbnail(size)
     i.save(file_path)
     return file_name
-    
-#https://www.youtube.com/watch?v=6WruncSoCdI
-#https://stackoverflow.com/questions/43013858/how-to-post-a-file-from-a-form-with-axios
+
 

@@ -14,8 +14,8 @@
         <label> About </label>
         <textarea v-model="forum.about" type="text"> </textarea>
         <label> Image Upload </label>
-        <input type="file">
-        <button v-on:click="update_forum()" class="form-submit-g"> Update </button>
+        <input type="file" name="image_file" ref="forum_picture">
+        <button v-on:click="change_forum_image(); update_forum()" class="form-submit-g"> Update </button>
       </div>
     </div>
 	</div>
@@ -36,6 +36,15 @@ export default {
     }
   },
   methods: {
+    change_forum_image() {
+			let image = this.$refs['forum_picture'].files[0];
+			let form_data = new FormData();
+			form_data.append("file", image);
+			console.log(form_data.get('file'));
+			axios.post(`${this.domain_name_api}update_forum_image/${this.forum.id}`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
+				console.log(response);
+			});
+		},
     update_forum() {
       axios.put(`${this.domain_name_api}forum/${this.forum.id}`, {'about' : this.forum.about}, { headers: { 'x-access-token' : this.token } }).then(() => {
         this.$router.push(`/forum/${this.query}`);
