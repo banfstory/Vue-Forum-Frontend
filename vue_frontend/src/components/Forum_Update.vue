@@ -15,8 +15,9 @@
           <label> About </label>
           <textarea v-model="forum.about" type="text"> </textarea>
           <label> Image Upload </label>
+          <div v-if="image_invalid_error" class="error-input">File must have the extension .jpg or .png</div>
           <input type="file" name="image_file" ref="forum_picture">
-          <button v-on:click="change_forum_image(); update_forum()" class="form-submit-g"> Update </button>
+          <button v-on:click="update_forum()" class="form-submit-g"> Update </button>
         </div>
       </div>
     </div>
@@ -47,6 +48,7 @@ export default {
       query: null,
       forum: {},
       loading: false,
+      image_invalid_error: false,
       popup: false
     }
   },
@@ -61,19 +63,25 @@ export default {
     change_forum_image() {
       let image = this.$refs['forum_picture'].files[0];
       if(image) {
-        let form_data = new FormData();
-        form_data.append("file", image);
-        console.log(form_data.get('file'));
-        axios.post(`${this.domain_name_api}update_forum_image/${this.forum.id}`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
-          let picture = response.data.filename
-          if(picture) {
-            this.forum.display_picture = picture;
-          }
-        })
+        let ext = image.name.split('.').pop(); // the extnesion will be the last period of the filename therefore pop is used
+        if(ext != 'jpg' && ext != 'png') {
+          this.image_invalid_error = true;
+        } else {
+          let form_data = new FormData();
+          form_data.append("file", image);
+          axios.post(`${this.domain_name_api}update_forum_image/${this.forum.id}`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
+            let picture = response.data.filename
+            if(picture) {
+              this.forum.display_picture = picture;
+            }
+          })
+        }
       }
 		},
     update_forum() {
+      this.resetValidation();
       axios.put(`${this.domain_name_api}forum/${this.forum.id}`, {'about' : this.forum.about}, { headers: { 'x-access-token' : this.token } }).then(response => {
+        this.change_forum_image();
         this.about = response.data.forum.about;
         bus.$emit('show_hide_notify', 'Forum updated');
       });
@@ -87,7 +95,10 @@ export default {
       }).catch(() => {
          this.$router.push('/error404');
       });
-    }
+    },
+    resetValidation() {
+			this.image_invalid_error = false;
+		}
   },
   computed: {
     c_forum_image: function() {

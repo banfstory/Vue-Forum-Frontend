@@ -171,33 +171,37 @@ def follow_forum(c_user, id):
 
 @api.route('/api/update_forum_image/<int:id>', methods=['POST'])
 @token_required
-def upload_forum_image(c_user, id):
+def update_forum_image(c_user, id):
     forum = Forum.query.filter_by(id=id, owner_id=c_user.id).first()
     if forum is None:
         return jsonify({'message': 'Invalid request'}), 400
     image = request.files['file']
     if image is None:
         return jsonify({'message': 'Invalid request'}), 400
-    file_name = save_image(image, 'forum_pics', forum.display_picture)
+    file_name = save_image(image, 'forum_pics')
     if file_name is None:
         return jsonify({'message': 'Invalid request'}), 400
-    if file_name != forum.display_picture:
-        forum.display_picture = file_name
-        db.session.commit()
+    if forum.display_picture != 'default.png':
+        file_path = os.path.join(app.root_path, f'static/forum_pics', forum.display_picture)
+        os.remove(file_path)
+    forum.display_picture = file_name
+    db.session.commit()
     return jsonify({'filename': file_name})
 
 @api.route('/api/update_user_image', methods=['POST'])
 @token_required
-def upload_user_image(c_user):
+def update_user_image(c_user):
     image = request.files['file']
     if image is None:
         return jsonify({'message': 'Invalid request'}), 400
-    file_name = save_image(image, 'user_pics', c_user.display_picture)
+    file_name = save_image(image, 'user_pics')
     if file_name is None:
         return jsonify({'message': 'Invalid request'}), 400
-    if file_name != c_user.display_picture:
-        c_user.display_picture = file_name
-        db.session.commit()
+    if c_user.display_picture != 'default.png':
+        file_path = os.path.join(app.root_path, f'static/user_pics', c_user.display_picture)
+        os.remove(file_path)
+    c_user.display_picture = file_name
+    db.session.commit()
     return jsonify({'filename': file_name})
 
 # PUT METHODS
@@ -592,19 +596,13 @@ def get_forum_image(file):
     return send_file(current_app.root_path + '/static/forum_pics/' + file)
 
 # FUNCTIONS
-def save_image(image, path_name, prev_path):
+def save_image(image, path_name):
     _,ext = os.path.splitext(image.filename)
     if ext != '.jpg' and ext != '.png':
         return None
-    file_name = ''
-    file_path = ''
-    if prev_path == 'default.png':
-        name = secrets.token_hex(10)
-        file_name = name + ext
-        file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
-    else:
-        file_name = prev_path
-        file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
+    name = secrets.token_hex(16)
+    file_name = name + ext
+    file_path = os.path.join(app.root_path, f'static/{path_name}', file_name)
     size = (300, 300)
     i = Image.open(image)
     i.thumbnail(size)

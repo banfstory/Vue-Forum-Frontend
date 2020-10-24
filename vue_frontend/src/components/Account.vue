@@ -20,8 +20,9 @@
 					<input type="text" v-model="input.email">
 					<div v-if="email_invalid_error" class="error-input">Invalid email address</div>
 					<label> Image Upload </label>
+					<div v-if="image_invalid_error" class="error-input">File must have the extension .jpg or .png</div>
 					<input type="file" name="image_file" ref="user_picture">
-					<button v-on:click="update_details(); change_user_image()" class="form-submit-g"> Update </button>
+					<button v-on:click="update_details()" class="form-submit-g"> Update </button>
 				</div>
 			</div>
 		</div>
@@ -54,6 +55,7 @@ export default {
 			username_exist_error: false,
 			username_char_error: false,
 			email_invalid_error: false,
+			image_invalid_error: false,
 			popup: false
 		}
 	},
@@ -68,15 +70,19 @@ export default {
     change_user_image() {
 			let image = this.$refs['user_picture'].files[0];
 			if(image) {
-				let form_data = new FormData();
-				form_data.append("file", image);
-				console.log(form_data.get('file'));
-				axios.post(`${this.domain_name_api}update_user_image`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
-					let picture = response.data.filename
-					if(picture) {
-						this.user.display_picture = picture
-					}
-				})
+				let ext = image.name.split('.').pop(); // the extnesion will be the last period of the filename therefore pop is used
+				if(ext != 'jpg' && ext != 'png') {
+					this.image_invalid_error = true;
+				} else {
+					let form_data = new FormData();
+					form_data.append("file", image);
+					axios.post(`${this.domain_name_api}update_user_image`, form_data, { headers: { 'Content-Type': 'multipart/form-data', 'x-access-token' : this.token } }).then(response => {
+						let picture = response.data.filename
+						if(picture) {
+							this.user.display_picture = picture;
+						}
+					})
+				}
 			}
 		},
 		update_details() {
@@ -94,9 +100,9 @@ export default {
 			}
 			if(!validation_error) {
 				axios.put(`${this.domain_name_api}account`, {'username' : username, 'email' : email}, { headers: { 'x-access-token' : this.token } }).then(() => {
+					this.change_user_image();
 					this.user.username = username;
 					this.user.email = email;
-					this.resetValidation();
 					bus.$emit('show_hide_notify', 'Account details updated');
 				}).catch(err => {
           if(err.response.data.error) {
@@ -109,6 +115,7 @@ export default {
 			this.username_exist_error = false;
 			this.username_char_error = false;
 			this.email_invalid_error = false;
+			this.image_invalid_error = false;
 		}
   },
 	computed: {
