@@ -51,6 +51,9 @@ export default {
   },
   created() {
     this.initApp();
+    bus.$on('loaded', () => {
+      this.loading = true;
+    });
     bus.$on('set_token', (token) => {
       this.token = token;
     });

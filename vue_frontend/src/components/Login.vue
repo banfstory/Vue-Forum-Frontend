@@ -54,6 +54,7 @@ export default {
           axios.get(`${this.domain_name_api}user_followers`, { headers: { 'x-access-token' : token } }).then(response => {
             bus.$emit('set_followers', response.data);
           });
+          bus.$emit('loaded'); // ensure router-vew is loaded when user login
           this.$router.push('/').catch(() => {});
           bus.$emit('show_hide_notify', 'Login successful');
           document.body.style = "overflow: scroll";
