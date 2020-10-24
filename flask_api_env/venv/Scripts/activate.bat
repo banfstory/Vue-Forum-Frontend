@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Denis\Desktop\vue_forum_flask\flask_api_env\venv
+set VIRTUAL_ENV=C:\Users\Denis\Desktop\flask_api_env\venv
 
 if not defined PROMPT set PROMPT=$P$G
 
