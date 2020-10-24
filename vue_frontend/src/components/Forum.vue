@@ -9,7 +9,7 @@
             <div> Forum </div>
           </div>  
         </div>
-        <div id="forum-buttons">
+        <div v-if="token" id="forum-buttons">
           <button v-if="followed" v-on:click="unfollow_forum()" @mouseover="changeToLeave()" @mouseleave="changeToJoin()"> {{ join_state }} </button>
           <button v-else v-on:click="follow_forum()"> JOIN </button>
           <router-link v-if="owner_forum" :to="{ path: `/forum/${forum.name}/update_forum`}"><button> UPDATE </button></router-link>
@@ -21,9 +21,8 @@
         <div id="post-layout-g">
           <div id="post-container">
             <div id="post-content-g">
-              <div id="forum-create-post" class="flex">
-                <img v-if="token" v-bind:src="c_user_image" height="45" width="45"> 
-                <img v-else v-bind:src="c_user_default_image" height="45" width="45"> 
+              <div v-if="token" id="forum-create-post" class="flex">
+                <img v-bind:src="c_user_image" height="45" width="45"> 
                 <router-link :to="{ path: `/forum/${forum.name}/create_post` }"><input placeholder="Create Post"></router-link>
               </div>
               <div v-for="post in posts" v-bind:key="post.id">

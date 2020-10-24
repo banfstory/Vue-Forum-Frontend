@@ -20,8 +20,8 @@
                 <p> {{ post.content }} </p>
                 <div> {{ post.num_of_comments }} <template> Comments </template></div>
               </div>
-              <div id="user-post">
-                <div v-if="token && post.user.id == user.id" id="modify-post">
+              <div v-if="token" id="user-post">
+                <div v-if="post.user.id == user.id" id="modify-post">
                   <router-link :to="{ path: `/forum/${post.id}/update_post`}"><button> Update </button></router-link>
                   <button v-on:click="popup_menu(true)" class="post-delete"> Delete </button>
                 </div>
@@ -63,8 +63,10 @@
               </div>
             </div>
             <div id="side-date-created-g"> Created in date {{ c_normal_date }}</div>
-            <button v-if="followed" v-on:click="unfollow_forum()" @mouseover="changeToLeave()" @mouseleave="changeToJoin()"> {{ join_state }} </button>
-            <button v-else v-on:click="follow_forum()"> JOIN </button>
+            <template v-if="token">
+              <button v-if="followed" v-on:click="unfollow_forum()" @mouseover="changeToLeave()" @mouseleave="changeToJoin()"> {{ join_state }} </button>
+              <button v-else v-on:click="follow_forum()"> JOIN </button>
+            </template>
           </div>
         </div> 
       </div>
@@ -220,6 +222,10 @@ export default {
 
 <style scoped>
 /* POST */
+#post-details {
+  border-bottom: 1px solid #999;
+}
+
 #forum-post-layout {
   width: 1200px;
   margin: 0 auto;
@@ -293,7 +299,6 @@ export default {
 
 #user-post {
   padding-bottom: 3rem;
-  border-bottom: 1px solid #999;
   overflow: hidden;
 }
 

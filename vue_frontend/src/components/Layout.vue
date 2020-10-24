@@ -110,7 +110,7 @@ export default {
     deleteAllCookies() {
       let cookies = document.cookie.split(";");
       let currTime = new Date();
-      currTime.setTime(currTime.getTime() - 60);
+      currTime.setTime(currTime.getTime() + 10000);
       for(let i = 0; i < cookies.length; i++) {
         let name = cookies[i].split("=")[0];
         document.cookie = `${name}=; expires=${currTime.toUTCString()}`;

@@ -68,7 +68,7 @@ export default {
   },
   created() {
 		if(!this.token) {
-			this.$router.push('/');
+      this.$router.push('/error403');
 		}
   },
   computed: {

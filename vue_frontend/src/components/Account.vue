@@ -1,26 +1,40 @@
 <template>
-	<div id="form-layout-g">
-		<div id="form-padding-g">
-			<div id="form-container-g">
-				<div id="account-profile" class="flex">
-						<img v-bind:src="c_user_image" height="125" width="125">
-						<div>
-								<div> {{ user.username }} </div>
-								<div> {{ user.email }} </div>
-						</div>
+	<div>
+		<div id="form-layout-g">
+			<div id="form-padding-g">
+				<div id="form-container-g">
+					<div id="account-profile" class="flex">
+							<img v-bind:src="c_user_image" height="125" width="125">
+							<div>
+									<div> {{ user.username }} </div>
+									<div> {{ user.email }} </div>
+							</div>
+					</div>
+					<button v-if="user.display_picture!='default.png'" v-on:click="popup=true"> Remove Profile Picture </button>
+					<h2> Update Account </h2>
+					<label> Username </label>
+					<input type="text" v-model="input.username">
+					<div v-if="username_exist_error" class="error-input">Username already exist</div>
+					<div v-if="username_char_error" class="error-input">Username must be between 3 and 25 characters long</div>
+					<label> Email </label>
+					<input type="text" v-model="input.email">
+					<div v-if="email_invalid_error" class="error-input">Invalid email address</div>
+					<label> Image Upload </label>
+					<input type="file" name="image_file" ref="user_picture">
+					<button v-on:click="update_details(); change_user_image()" class="form-submit-g"> Update </button>
 				</div>
-				<button v-if="user.display_picture!='default.png'" v-on:click="remove_user_image()"> Remove Profile Picture </button>
-				<h2> Update Account </h2>
-				<label> Username </label>
-				<input type="text" v-model="input.username">
-				<div v-if="username_exist_error" class="error-input">Username already exist</div>
-				<div v-if="username_char_error" class="error-input">Username must be between 3 and 25 characters long</div>
-				<label> Email </label>
-				<input type="text" v-model="input.email">
-				<div v-if="email_invalid_error" class="error-input">Invalid email address</div>
-				<label> Image Upload </label>
-				<input type="file" name="image_file" ref="user_picture">
-				<button v-on:click="update_details(); change_user_image()" class="form-submit-g"> Update </button>
+			</div>
+		</div>
+		<div v-if="popup" id="popup-form-g">
+			<div id="popup-wrapper-form-g">
+				<div id="popup-container-form-g">
+					<div> Remove User Account Image </div>
+					<div> Are you sure you want to remove this image? </div>
+					<div id="pop-up-buttons-form-g">
+						<button v-on:click="remove_user_image()"> REMOVE </button>
+						<button v-on:click="popup=false"> CANCEL </button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -39,7 +53,8 @@ export default {
 			input: { username: this.user.username, email: this.user.email },
 			username_exist_error: false,
 			username_char_error: false,
-			email_invalid_error: false
+			email_invalid_error: false,
+			popup: false
 		}
 	},
   methods: {
@@ -47,6 +62,7 @@ export default {
 			axios.delete(`${this.domain_name_api}remove_user_picture`, { headers: { 'x-access-token' : this.token } }).then(() => {
 				this.user.display_picture = 'default.png';
 				bus.$emit('show_hide_notify', 'User picture removed');
+				this.popup = false;
 			});
 		},
     change_user_image() {
@@ -102,7 +118,7 @@ export default {
 	},
   created() {
 		if(!this.token) {
-			this.$router.push('/');
+			this.$router.push('/error403');
 		}
 	},
 	mixins: [imageMixin, validationMixin]

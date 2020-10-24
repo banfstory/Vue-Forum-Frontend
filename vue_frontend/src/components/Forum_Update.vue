@@ -1,24 +1,38 @@
 <template>
-	<div v-if="loading" id="form-layout-g">
-    <div id="form-padding-g">
-      <div id="form-container-g">
-        <div id="forum-profile" class="flex">
-          <img v-bind:src="c_forum_image" height="125" width="125">
-          <div>
-            <div> {{ forum.name }} </div>
-            <div> Forum </div>
+  <div v-if="loading"> 
+    <div id="form-layout-g">
+      <div id="form-padding-g">
+        <div id="form-container-g">
+          <div id="forum-profile" class="flex">
+            <img v-bind:src="c_forum_image" height="125" width="125">
+            <div>
+              <div> {{ forum.name }} </div>
+              <div> Forum </div>
+            </div>
           </div>
+          <button v-if="forum.display_picture!='default.png'" v-on:click="popup=true"> Remove Forum Picture </button>
+          <h2> Update Account </h2>
+          <label> About </label>
+          <textarea v-model="forum.about" type="text"> </textarea>
+          <label> Image Upload </label>
+          <input type="file" name="image_file" ref="forum_picture">
+          <button v-on:click="change_forum_image(); update_forum()" class="form-submit-g"> Update </button>
         </div>
-        <button v-if="forum.display_picture!='default.png'" v-on:click="remove_forum_image()"> Remove Forum Picture </button>
-        <h2> Update Account </h2>
-        <label> About </label>
-        <textarea v-model="forum.about" type="text"> </textarea>
-        <label> Image Upload </label>
-        <input type="file" name="image_file" ref="forum_picture">
-        <button v-on:click="change_forum_image(); update_forum()" class="form-submit-g"> Update </button>
       </div>
     </div>
-	</div>
+    <div v-if="popup" id="popup-form-g">
+      <div id="popup-wrapper-form-g">
+        <div id="popup-container-form-g">
+          <div> Remove Forum Image </div>
+          <div> Are you sure you want to remove this image? </div>
+          <div id="pop-up-buttons-form-g">
+            <button v-on:click="remove_forum_image()"> REMOVE </button>
+            <button v-on:click="popup=false"> CANCEL </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -32,7 +46,8 @@ export default {
     return {
       query: null,
       forum: {},
-      loading: false
+      loading: false,
+      popup: false
     }
   },
   methods: {
@@ -40,6 +55,7 @@ export default {
 			axios.delete(`${this.domain_name_api}remove_forum_picture/${this.forum.id}`, { headers: { 'x-access-token' : this.token } }).then(() => {
         this.forum.display_picture = 'default.png';
         bus.$emit('show_hide_notify', 'Forum picture removed');
+        this.popup = false;
 			});
 		},
     change_forum_image() {
@@ -80,9 +96,10 @@ export default {
   },
   created() {
     if(!this.token) {
-			this.$router.push('/');
-		}
-    this.forum_results();
+      this.$router.push('/error403');
+		} else {
+      this.forum_results();
+    }
   },
   watch: {
 		$route() {

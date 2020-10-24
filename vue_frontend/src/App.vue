@@ -331,6 +331,68 @@ button, input, textarea:focus {
   text-align: center;
 }
 
+/* Popup form (to remove images from user account or forum) */
+
+#popup-form-g {
+  z-index: 30;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%; 
+  background-color: rgba(0, 0, 0, 0.9); 
+}
+
+#popup-wrapper-form-g {
+  border-radius: 1px;
+  position: relative;
+  background-color: #fff;
+  width: 350px;
+  margin: 0 auto;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#popup-container-form-g {
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+#popup-container-form-g > div:nth-of-type(1) {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+#popup-container-form-g > div:nth-of-type(2) {
+  font-size: 0.8rem;
+}
+
+#pop-up-buttons-form-g {
+  margin-top: 2rem;
+  float: right;
+}
+
+#pop-up-buttons-form-g button {
+  width: 90px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  background-color: rgb(17, 65, 133);
+  padding: 0.7rem 0;
+  border-radius: 2px; 
+  border: none;
+  color:white;
+  font-weight: 600;
+}
+
+#pop-up-buttons-form-g button:hover {
+  background-color: rgb(11, 52, 110);
+}
+
+#pop-up-buttons-form-g button:nth-of-type(2) {
+  margin-left: 0.5rem;
+}
+
 /* Authentication Form General Layout */
 #popup-auth-g {
   z-index: 100;

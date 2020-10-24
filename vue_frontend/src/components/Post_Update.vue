@@ -54,9 +54,10 @@ export default {
   },
   created() {
     if(!this.token) {
-			this.$router.push('/');
-		}
-    this.post_results();
+      this.$router.push('/error403');
+		} else {
+      this.post_results();
+    }
   },
   watch: {
 		$route() {

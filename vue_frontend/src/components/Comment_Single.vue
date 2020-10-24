@@ -24,7 +24,7 @@
       </div>
       <p> {{ comment.content }} </p>
     </div>
-    <div class="comment-footer">
+    <div v-if="token" class="comment-footer">
       <div v-on:click="addreply=true" class="prompt-reply"> REPLY </div>
       <div v-if="addreply" class="comment-reply-popup-g">
         <textarea placeholder="Add a reply" v-model="input.add_reply"></textarea>

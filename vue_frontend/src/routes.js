@@ -10,6 +10,7 @@ import Forum_Update from "./components/Forum_Update.vue";
 import Change_Password from "./components/Change_Password.vue";
 import Forum_Create_Post from "./components/Forum_Create_Post.vue";
 import PageNotFound from "./components/PageNotFound";
+import Forbidden from "./components/Forbidden";
 
 export default [
   { path:'/', component:Home, meta: { title: `Home Page` } },
@@ -23,6 +24,7 @@ export default [
   { path:'/forum/:name/update_forum', component:Forum_Update, meta: { title: `Update Forum` } },
   { path:'/change_password', component:Change_Password, meta: { title: `Change Password` } },
   { path:'/forum/:name/create_post', component:Forum_Create_Post, meta: { title: `Create Post` } },
+  { path:'/error403', component: Forbidden, meta: { title: `403 Forbidden` } },
   { path:'/error404', component: PageNotFound, meta: { title: `404 Page not found` } },
   { path:'*', component: PageNotFound, meta: { title: `404 Page not found` } }
 ]
