@@ -1,7 +1,7 @@
 <template>
   <div>
     <layout></layout>
-		<div v-if="token" id="content-wrapper"><router-view v-bind:token="token" v-bind:user="user"></router-view></div>
+		<div v-if="token" id="content-wrapper"><router-view v-if="loading" v-bind:token="token" v-bind:user="user"></router-view></div>
     <div v-else id="content-wrapper" style="margin-left:0"><router-view v-bind:token="token" v-bind:user="user"></router-view></div>
     <transition name="fade_notify"> <div v-if="notification" id="pop-message" ref="popup-notification"> {{ notify_message }} </div> </transition>
   </div>
@@ -22,6 +22,7 @@ export default {
 			token: null,
       user: {},
       notification: false,
+      loading: false,
       notify_message: ''
     };
   },
@@ -38,6 +39,7 @@ export default {
           bus.$emit('init_token', this.token);
           axios.get(`${this.domain_name_api}user_followers`, { headers: { 'x-access-token' : this.token } }).then(response => {
             bus.$emit('init_followers', response.data);
+            this.loading = true;
           });  
         });
       }  
