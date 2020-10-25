@@ -6,9 +6,9 @@
           <div v-on:click="close_popup()" class="close"> &times; </div>
           <div id="login_form">
             <h2> Log in to Flask Forum </h2>      
-            <input type="text" v-model="input.username" placeholder="Username" v-on:keyup.enter="login_user(); close_popup()">
+            <input type="text" v-model="input.username" placeholder="Username" v-on:keyup.enter="login_user()">
             <div v-if="username_error" class="error-input">Username does not exist</div>
-            <input type="password" v-model="input.password" placeholder="Password" v-on:keyup.enter="login_user(); close_popup()">
+            <input type="password" v-model="input.password" placeholder="Password" v-on:keyup.enter="login_user()">
             <div v-if="password_error" class="error-input">Password does not match with this username</div>
             <a href="#"> Forgot Password? </a>
             <button v-on:click="login_user();"> Login </button>
