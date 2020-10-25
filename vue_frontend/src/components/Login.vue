@@ -44,7 +44,7 @@ export default {
         axios.get(`${this.domain_name_api}login`, { auth: { username: username, password: password}}).then(response => {
           let currTime = new Date();
           currTime.setTime(currTime.getTime() + 86400 * 1000);
-          document.cookie = "token=" + response.data.token + "; expires=" + currTime.toUTCString();
+          document.cookie = `token=${response.data.token}; path=/; expires=${currTime.toUTCString()}`;
           let token = response.data.token;
           bus.$emit('set_token', token);
           let user = jwtdecode(token); //decode the token to retrieve data about the user
