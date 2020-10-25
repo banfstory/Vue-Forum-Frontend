@@ -111,6 +111,7 @@ export default {
       let cookies = document.cookie.split(";");
       let currTime = new Date();
       currTime.setTime(currTime.getTime());
+      currTime.setMonth(currTime.getMonth() - 1);
       for(let i = 0; i < cookies.length; i++) {
         let name = cookies[i].split("=")[0];
         document.cookie = `${name}=; expires=${currTime.toUTCString()}`;
