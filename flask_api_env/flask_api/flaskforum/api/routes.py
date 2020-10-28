@@ -30,7 +30,7 @@ def api_login():
     auth = request.authorization
     if not auth or not auth.username or not auth.password:
         return jsonify({'message': 'Unauthorized Access'}), 401
-    user = User.query.filter_by(username=auth.username).first()
+    user = db.session.query(User).filter(db.func.lower(User.username)==db.func.lower(auth.username)).first()
     if not user:
         return jsonify({ 'error': {'username': 'User does not exist'}}), 401
     if bcrypt.check_password_hash(user.password, auth.password):
