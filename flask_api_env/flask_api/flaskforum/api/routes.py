@@ -34,8 +34,7 @@ def api_login():
     if not user:
         return jsonify({ 'error': {'username': 'User does not exist'}}), 401
     if bcrypt.check_password_hash(user.password, auth.password):
-        token = jwt.encode({'id': user.id, 'exp': datetime.utcnow(
-        ) + timedelta(minutes=1440)}, app.config['SECRET_KEY'])
+        token = jwt.encode({'id': user.id, 'exp': datetime.utcnow() + timedelta(minutes=1440)}, app.config['SECRET_KEY'])
         return jsonify({'token': token.decode('UTF-8')})
     return jsonify({ 'error': {'password': 'Password does not match with this username'}}), 401
 
