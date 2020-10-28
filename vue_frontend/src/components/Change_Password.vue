@@ -18,7 +18,8 @@
       <label> Confirm New Passowrd </label>
       <input type="password" v-model="input.confirm_new_password">
       <div v-if="password_not_equal" class="error-input">Field must be equal to new password</div>
-      <div v-if="password_invalid" class="error-input">Password must be 8 or more characters long and contain atleast one uppercase, lowercase, digit and special character</div>
+      <div v-else-if="password_invalid" class="error-input">Password must be 8 or more characters long and contain atleast one uppercase, lowercase, digit and special character</div>
+      <div v-else-if="password_limit_error" class="error-input">Password cannot exceed 128 characters</div>
       <button v-on:click="change_password()" class="form-submit-g"> Change Password </button>
     </div>
   </div>
@@ -39,19 +40,20 @@ export default {
       input: { old_password: '', new_password: '', confirm_new_password: '' },
       password_inc_error: false,
       password_not_equal: false,
+      password_limit_error: false,
       password_invalid: false
     }
   },
   methods: {
     change_password() {
-      this.password_inc_error = false;
-      this.password_not_equal = false;
-      this.password_invalid = false;
+      this.resetValidation();
       let old_password = this.input.old_password;
       let new_password = this.input.new_password;
       let confirm_new_password = this.input.confirm_new_password;
       if(new_password != confirm_new_password) {
         this.password_not_equal = true;
+      } else if(new_password.length > 128) {
+        this.password_limit_error = true;
       } else if(!this.validPassword(new_password)) {
         this.password_invalid = true;
       } else {
@@ -64,6 +66,12 @@ export default {
           }
         });
       }
+    },
+    resetValidation() {
+      this.password_inc_error = false;
+      this.password_not_equal = false;
+      this.password_invalid = false;
+      this.password_limit_error = false;
     }
   },
   created() {

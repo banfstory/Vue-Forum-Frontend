@@ -16,6 +16,7 @@
             <input type="password" v-model="input.confirm_pass" placeholder="Confirm Password" v-on:keyup.enter="register_user()">
             <div v-if="password_invalid" class="error-input">Password must be 8 or more characters long and contain atleast one uppercase, lowercase, digit and special character</div>
             <div v-else-if="password_not_equal" class="error-input">Field must be equal to password</div>
+            <div v-else-if="password_limit_error" class="error-input">Password cannot exceed 128 characters</div>
             <button v-on:click="register_user();"> Register </button>
             <span v-on:click="switch_auth_popup()" id="login_account"> Already have an account? </span>
           </div>
@@ -38,6 +39,7 @@ export default {
       username_char_error: false,
       email_invalid_error: false,
       password_invalid: false,
+      password_limit_error: false,
       password_not_equal: false,
       user_space_error: false
     }
@@ -63,6 +65,9 @@ export default {
       } 
       if(password != confirm_password) { // passwords do not match
         this.password_not_equal = true;
+        validation_error = true;
+      } else if(password.length > 128) {
+        this.password_limit_error = true;
         validation_error = true;
       } else if(!this.validPassword(password)) { // password format is invalid
         this.password_invalid = true;
@@ -94,6 +99,7 @@ export default {
       this.username_char_error = false;
       this.email_invalid_error = false;
       this.password_not_equal = false;
+      this.password_limit_error = false;
       this.password_invalid = false;
       this.user_space_error = false;
     }
