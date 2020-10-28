@@ -9,7 +9,7 @@ export default {
 		validPassword(password) {
 			// Password rules: contain atleast one uppercase, lowercase, special character and number
 			// '?=.*' this 'look ahead' ensures that atleast one of those characters are contained for each of the specified rules
-			let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~])[a-zA-Z\d!"#$%&'()*+,\-./:;<=>?@\[\\\]^_`{|}~]{8,}/;
+			let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])[a-zA-Z\d!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,}/;
       return regex.test(password);
 		}
   }
