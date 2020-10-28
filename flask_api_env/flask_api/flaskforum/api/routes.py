@@ -2,6 +2,7 @@ from flaskforum import db, bcrypt, app
 from flask import Blueprint, request, jsonify, make_response, render_template, url_for, send_file, current_app, redirect
 from flaskforum.models import *
 from flaskforum.api.schema import *
+from flaskforum.api.validators import *
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
@@ -61,9 +62,9 @@ def token_required(verify_token):  # verify token that has been given
 def api_create_post(c_user):
     data = request.get_json()
     try:
-        title = data['title']
-        content = data['content']
-        forum_id = data['forum_id']
+        title = data['title'].strip()
+        content = data['content'].strip()
+        forum_id = data['forum_id'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     forum = Forum.query.get(forum_id)
@@ -81,8 +82,8 @@ def api_create_post(c_user):
 def api_create_comment(c_user):
     data = request.get_json()
     try:
-        content = data['content']
-        post_id = data['post_id']
+        content = data['content'].strip()
+        post_id = data['post_id'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     post = Post.query.get(post_id)
@@ -101,8 +102,8 @@ def api_create_comment(c_user):
 def api_create_reply(c_user):
     data = request.get_json()
     try:
-        content = data['content']
-        comment_id = data['comment_id']
+        content = data['content'].strip()
+        comment_id = data['comment_id'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     comment = Comment.query.get(comment_id)
@@ -121,8 +122,8 @@ def api_create_reply(c_user):
 def api_create_forum(c_user):
     data = request.get_json()
     try:
-        name = data['name']
-        about = data['about']
+        name = data['name'].strip()
+        about = data['about'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     exist = db.session.query(Forum).filter(db.func.lower(Forum.name)==db.func.lower(name)).first()
@@ -138,9 +139,9 @@ def api_create_forum(c_user):
 def api_register():
     data = request.get_json()
     try:
-        username = data['username']
-        email = data['email']
-        password = data['password']
+        username = data['username'].strip()
+        email = data['email'].strip()
+        password = data['password'].strip()
         user = db.session.query(User).filter(db.func.lower(User.username)==db.func.lower(username)).first()
         if not user:
             hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -212,8 +213,8 @@ def api_update_post(c_user, id):
         return jsonify({'message': 'Invalid request'}), 400
     data = request.get_json()
     try:
-        title = data['title']
-        content = data['content']
+        title = data['title'].strip()
+        content = data['content'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     post.title = title
@@ -230,7 +231,7 @@ def api_update_comment(c_user, id):
         return jsonify({'message': 'Invalid request'}), 400
     data = request.get_json()
     try:
-        content = data['content']
+        content = data['content'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     comment.content = content
@@ -246,7 +247,7 @@ def api_update_reply(c_user, id):
         return jsonify({'message': 'Invalid request'}), 400
     data = request.get_json()
     try:
-        content = data['content']
+        content = data['content'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     reply.content = content
@@ -262,7 +263,7 @@ def api_update_forum(c_user, id):
         return jsonify({'message': 'Invalid request'}), 400
     data = request.get_json()
     try:
-        about = data['about']
+        about = data['about'].strip()
     except:
         return jsonify({'message': 'Invalid request'}), 400
     forum.about = about
@@ -607,18 +608,4 @@ def save_image(image, path_name):
     i.thumbnail(size)
     i.save(file_path)
     return file_name
-
-# VALIDATION    
-def validEmail(email):
-    pattern = r'^([\w\.-]+)@([a-zA-Z-]+).([a-zA-Z]{2,10})(\.[a-zA-Z]{2,10})$'
-    return True if re.search(pattern, email) else False
-
-def validPassword(password):
-    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~])[a-zA-Z\d!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~]{8,}$'
-    return True if re.search(pattern, password) else False
-
-def username_no_space(username):
-    pattern = r'^\w+$'
-    return True if re.search(pattern, username) else False
-
 
