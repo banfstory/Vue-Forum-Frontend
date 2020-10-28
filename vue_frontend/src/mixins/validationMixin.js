@@ -11,6 +11,10 @@ export default {
 			// '?=.*' this 'look ahead' ensures that atleast one of those characters are contained for each of the specified rules
 			let regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])[a-zA-Z\d!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{8,}/;
       return regex.test(password);
-		}
+    },
+    validUserSpace(username) {
+      let regex = /^\w+$/;
+      return regex.test(username);
+    }
   }
 };

@@ -15,7 +15,8 @@
 					<label> Username </label>
 					<input type="text" v-model="input.username">
 					<div v-if="username_exist_error" class="error-input">Username already exist</div>
-					<div v-if="username_char_error" class="error-input">Username must be between 3 and 25 characters long</div>
+					<div v-else-if="username_char_error" class="error-input">Username must be between 3 and 25 characters long</div>
+					<div v-else-if="user_space_error" class="error-input">Username must not contain spaces</div>
 					<label> Email </label>
 					<input type="text" v-model="input.email">
 					<div v-if="email_invalid_error" class="error-input">Invalid email address</div>
@@ -56,6 +57,7 @@ export default {
 			username_char_error: false,
 			email_invalid_error: false,
 			image_invalid_error: false,
+			user_space_error: false,
 			popup: false
 		}
 	},
@@ -93,7 +95,10 @@ export default {
 			if(username.length < 3 || username.length > 25) {
         this.username_char_error = true;
         validation_error = true;
-      }
+			} else if(!this.validUserSpace(username)) {
+				this.user_space_error = true;
+				validation_error = true;
+			}
       if(!this.validEmail(email)) {
         this.email_invalid_error = true;
         validation_error = true;
@@ -116,6 +121,7 @@ export default {
 			this.username_char_error = false;
 			this.email_invalid_error = false;
 			this.image_invalid_error = false;
+			this.user_space_error = false;
 		}
   },
 	computed: {
