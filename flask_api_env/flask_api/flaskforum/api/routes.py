@@ -2,7 +2,7 @@ from flaskforum import db, bcrypt, app
 from flask import Blueprint, request, jsonify, make_response, render_template, url_for, send_file, current_app, redirect
 from flaskforum.models import *
 from flaskforum.api.schema import *
-from flaskforum.api.validators import *
+from flaskforum.api.validators import input_validator
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
@@ -23,6 +23,12 @@ Authorization:
 """
 
 api = Blueprint('api', __name__)
+
+@api.route('/api/email/<string:email>', methods=['GET'])
+def check_email(email):
+    errors = dict()
+    input_validator.validEmail(email, errors)
+    return jsonify(errors)
 
 # TOKEN
 # give token to user that login with valid details
@@ -62,9 +68,9 @@ def token_required(verify_token):  # verify token that has been given
 def api_create_post(c_user):
     data = request.get_json()
     try:
-        title = data['title'].strip()
-        content = data['content'].strip()
-        forum_id = data['forum_id'].strip()
+        title = data['title']
+        content = data['content']
+        forum_id = data['forum_id']
     except:
         return jsonify({'message': 'Invalid request'}), 400
     forum = Forum.query.get(forum_id)
@@ -82,8 +88,8 @@ def api_create_post(c_user):
 def api_create_comment(c_user):
     data = request.get_json()
     try:
-        content = data['content'].strip()
-        post_id = data['post_id'].strip()
+        content = data['content']
+        post_id = data['post_id']
     except:
         return jsonify({'message': 'Invalid request'}), 400
     post = Post.query.get(post_id)
@@ -102,8 +108,8 @@ def api_create_comment(c_user):
 def api_create_reply(c_user):
     data = request.get_json()
     try:
-        content = data['content'].strip()
-        comment_id = data['comment_id'].strip()
+        content = data['content']
+        comment_id = data['comment_id']
     except:
         return jsonify({'message': 'Invalid request'}), 400
     comment = Comment.query.get(comment_id)
@@ -122,8 +128,8 @@ def api_create_reply(c_user):
 def api_create_forum(c_user):
     data = request.get_json()
     try:
-        name = data['name'].strip()
-        about = data['about'].strip()
+        name = data['name']
+        about = data['about']
     except:
         return jsonify({'message': 'Invalid request'}), 400
     exist = db.session.query(Forum).filter(db.func.lower(Forum.name)==db.func.lower(name)).first()
@@ -139,9 +145,9 @@ def api_create_forum(c_user):
 def api_register():
     data = request.get_json()
     try:
-        username = data['username'].strip()
-        email = data['email'].strip()
-        password = data['password'].strip()
+        username = data['username']
+        email = data['email']
+        password = data['password']
         user = db.session.query(User).filter(db.func.lower(User.username)==db.func.lower(username)).first()
         if not user:
             hash_password = bcrypt.generate_password_hash(password).decode('utf-8')

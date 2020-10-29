@@ -1,75 +1,67 @@
+
 import re
 
 # User validation
-def validEmail(email, errors):
-    if len(email) > 254:
-        return False
-    pattern = r'^([\w\.-]+)@([a-zA-Z-]+).([a-zA-Z]{2,10})(\.[a-zA-Z]{2,10})$'
-    return True if re.search(pattern, email) else False
+class input_validator:
+    @classmethod
+    def validEmail(self, email, errors):
+        pattern = r'^([\w\.-]+)@([a-zA-Z-]+).([a-zA-Z]{2,10})(\.[a-zA-Z]{2,10})$'
+        if len(email) > 254 or not re.search(pattern, email):
+            errors.update({'email_errors' : 'Invalid email address. Email must not exceed 254 characters'})
 
-def EmailMessage():
-    return ''
+    @classmethod
+    def validPassword(self, password, errors):
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~])[a-zA-Z\d!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~]{8,128}$'
+        if not re.search(pattern, password):
+            errors.update({'password_errors' : 'Password must be 8 or more characters long and contain atleast one uppercase, lowercase, digit and special character. Password must not exceed 128 characters'})
 
-def validPassword(password, errors):
-    pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~])[a-zA-Z\d!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~]{8,128}$'
-    return True if re.search(pattern, password) else False
+    @classmethod
+    def validUsername(self, username, errors):
+        pattern = r'^\w{3,25}$'
+        if not re.search(pattern, username):
+            errors.update({'username_errors' : 'Username must be between 3 and 25 characters long and must not have any white spaces'})
 
-def PasswordMessage():
-    return ''
+    @classmethod
+    #Forum validation
+    def validForumName(self, name, errors):
+        pattern = r'^\w{3,25}$'
+        if not re.search(pattern, name):
+            errors.update({'forum_name_errors' : 'Forum name must be between 3 and 25 characters long and must not have any white spaces'})
 
-def validUsername(username, errors):
-    pattern = r'^\w{3,25}$'
-    return True if re.search(pattern, username) else False
+    @classmethod
+    def validForumAbout(self, about, errors):
+        pattern = r'^.{1,30000}$'
+        if not re.search(pattern, about):
+            errors.update({'forum_name_errors' : 'Forum about must be have atleast 1 character and must not exceed 30000 characters'})
 
-def UsernameMessage():
-    return ''   
+    @classmethod
+    #Post validation
+    def validPostTitle(self, title, errors):
+        pattern = r'^.{1,5000}$'
+        if not re.search(pattern, title):
+            errors.update({'post_title_errors' : 'Post title must be atleast 1 character long and must not exceed 5000 characters'})
 
-#Forum validation
-def validForumName(name, errors):
-    pattern = r'^\w{3,25}$'
-    return True if re.search(pattern, name) else False
+    @classmethod
+    def validPostContent(self, content, errors):
+        pattern = r'^.{0,30000}$'
+        if not re.search(pattern, content):
+            errors.update({'post_content_errors' : 'Post content must not exceed 30000 characters long'})
 
-def ForumNameMessage():
-    return ''  
+    @classmethod
+    #Comment validation
+    def validCommentContent(self,content, errors):
+        pattern = r'^.{1,20000}$'
+        if not re.search(pattern, content):
+            errors.update({'comment_content_errors' : 'Comment content must be atleast 1 character long and must not exceed 20000 characters'})
 
-def validForumAbout(about, errors):
-    pattern = r'^.{1,30000}$'
-    return True if re.search(pattern, about) else False
+    @classmethod
+    #Reply validation
+    def validReplyContent(self,content, errors):
+        pattern = r'^.{1,20000}$'
+        if not re.search(pattern, content):
+            errors.update({'reply_content_errors' : 'Reply content must be atleast 1 character long and must not exceed 20000 characters'})
 
-def ForumAboutMessage():
-    return '' 
-
-#Post validation
-def validPostTitle(title, errors):
-    pattern = r'^.{1,5000}$'
-    return True if re.search(pattern, title) else False
-
-def PostTitleMessage():
-    return '' 
-
-def validPostContent(content, errors):
-    pattern = r'^.{1,30000}$'
-    return True if re.search(pattern, content) else False  
-   
-def PostContentMessage():
-    return '' 
-
-#Comment validation
-def validCommentContent(content, errors):
-    pattern = r'^.{1,20000}$'
-    return True if re.search(pattern, content) else False  
-
-def CommentContentMessage():
-    return '' 
-
-#Reply validation
-def validReplyContent(content, errors):
-    pattern = r'^.{1,20000}$'
-    return True if re.search(pattern, content) else False
-
-def ReplyContentMessage():
-    return '' 
-
-#Invalid Request Message
-def InvalidRequest():
-    return {'message' : 'Invalid request'}
+    @classmethod
+    #Invalid Request Message
+    def InvalidRequest():
+        return {'message' : 'Invalid request'}
