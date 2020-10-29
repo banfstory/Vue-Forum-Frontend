@@ -15,7 +15,7 @@
           <img v-bind:src="c_user_image" height="30" width="30">
         </router-link>
         <div class="reply-header-data">
-          <span>  Posted by  <router-link :to="{ path: `/user/${reply.user.username}/posts`}">{{ reply.user.username }}</router-link> </span> 
+          <span>  Replied by  <router-link :to="{ path: `/user/${reply.user.username}/posts`}">{{ reply.user.username }}</router-link> </span> 
           <span> {{ c_time_ago }}  </span>  
         </div>
       </div>

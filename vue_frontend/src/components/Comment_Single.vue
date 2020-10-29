@@ -16,7 +16,7 @@
             <img v-bind:src="c_user_image" height="40" width="40">
           </router-link>
           <div class="comment-header-data">
-            <span>  Posted by  <router-link :to="{ path: `/user/${comment.user.username}/posts`}">{{ comment.user.username }}</router-link> </span> 
+            <span>  Commented by  <router-link :to="{ path: `/user/${comment.user.username}/posts`}">{{ comment.user.username }}</router-link> </span> 
             <span> {{ c_time_ago }} </span>
           </div>
         </div>
