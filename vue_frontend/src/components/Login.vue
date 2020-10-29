@@ -36,11 +36,14 @@ export default {
   },
   methods: {
     login_user() {
-      this.username_error = false;
-      this.password_error = false;
+      this.resetValidation();
       let username = this.input.username;
       let password = this.input.password;
-      if(username.trim().length >= 3 || password.trim().length >= 4) { // username must be 3 or more characters long and password must be 4 or more characters long
+      if(username.trim().length == 0) {
+        this.username_error = true;
+      } else if(password.length == 0) {
+        this.password_error = true;
+      } else {
         axios.get(`${this.domain_name_api}login`, { auth: { username: username, password: password}}).then(response => {
           let currTime = new Date();
           currTime.setTime(currTime.getTime() + 86400 * 1000);
@@ -77,6 +80,10 @@ export default {
     },
     switch_auth_popup() {
       bus.$emit('switch_auth_popup', 'register');
+    },
+    resetValidation() {
+      this.username_error = false;
+      this.password_error = false;
     }
   }
 };
