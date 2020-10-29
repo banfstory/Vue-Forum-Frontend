@@ -2,7 +2,7 @@
   <div class="reply-item" @mouseover="hover=true" @mouseleave="hover=false">
     <div v-if="dotpopup" class="dot-popup" ref="modify-popup">
       <template v-if="dotmodify">
-        <div v-on:click="dotpopup=false; updatereply=true; currentdata=reply.content" class="flex"> <i class="far fa-edit"> </i> <span> Update </span> </div>
+        <div v-on:click="showUpdateReply()" class="flex"> <i class="far fa-edit"> </i> <span> Update </span> </div>
         <div v-on:click="dotpopup=false; delete_reply()" class="flex"> <i class="fas fa-trash-alt"> </i> <span> Delete </span> </div>
       </template>
       <template v-else>
@@ -23,10 +23,12 @@
     </div>
     <p> {{ reply.content }} </p>
     <div v-if="updatereply" class="comment-reply-popup-g">
+      <div v-if="content_empty_error" class="error-input">Content cannot be empty</div>
+      <div v-else-if="content_limit_error" class="error-input">Content field must not exceed 20000 characters</div>
       <textarea placeholder="Update reply" v-model="input.update_reply"> </textarea>
       <div class="reply-comment-buttons-g">
         <button v-on:click="update_reply()"> Update </button>
-        <button v-on:click="updatereply=false"> Cancel </button>
+        <button v-on:click="updatereply=false; resetValidation()"> Cancel </button>
       </div>
     </div>
   </div>
@@ -47,6 +49,8 @@ export default {
       dotpopup: false,
       dotmodify: false,
       updatereply: false,
+      content_empty_error: false,
+      content_limit_error: false
     }
   },
   methods: {
@@ -61,8 +65,13 @@ export default {
       }
     },
     update_reply() {
+      this.resetValidation();
       let content = this.input.update_reply.trim();
-      if(content.length > 0) {
+      if(content.length == 0) {
+        this.content_empty_error = true;
+      } else if(content.length > 20000) {
+        this.content_limit_error = true;
+      } else {
         axios.put(`${this.domain_name_api}reply/${this.reply.id}`, { 'content' : content }, { headers: { 'x-access-token' : this.token } }).then(() => {
           this.reply.content = content;
           this.input.update_reply = '';
@@ -73,6 +82,15 @@ export default {
     },
     popup_reply() {
       bus.$emit('dotpopup', this);
+    },
+    showUpdateReply() {
+      this.dotpopup = false; 
+      this.updatereply = true; 
+      this.input.update_reply = this.reply.content;
+    },
+    resetValidation() {
+      this.content_empty_error = false;
+      this.content_limit_error = false;
     }
   },
   computed: {

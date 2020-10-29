@@ -26,6 +26,8 @@
                   <button v-on:click="popup_menu(true)" class="post-delete"> Delete </button>
                 </div>
                 <div id="add-comment">
+                  <div v-if="content_empty_error" class="error-input">Content cannot be empty</div>
+                  <div v-else-if="content_limit_error" class="error-input">Content field must not exceed 20000 characters</div>
                   <textarea placeholder="Add a comment" v-model="input.add_comment"> </textarea>
                   <button v-on:click="add_comment()"> Comment </button>
                 </div>
@@ -108,7 +110,9 @@ export default {
       followed: false,
       popup: false,
       join_state: 'JOINED',
-      loading: false
+      loading: false,
+      content_empty_error: false,
+      content_limit_error: false
     };
   },
   methods: {
@@ -159,8 +163,13 @@ export default {
       });
     },
     add_comment() {
+      this.resetValidation();
       let content = this.input.add_comment.trim();
-      if(content.length > 0) {
+      if(content.length == 0) {
+        this.content_empty_error = true;
+      } else if(content.length > 20000) {
+        this.content_limit_error = true;
+      } else {
         axios.post(`${this.domain_name_api}comment`, {'content' : content, 'post_id' : this.post.id}, { headers: { 'x-access-token' : this.token } }).then((response) => {
           this.post.num_of_comments += 1;
           this.input.add_comment = '';
@@ -195,6 +204,10 @@ export default {
     },
     changeToJoin() {
       this.join_state = 'JOINED';
+    },
+    resetValidation() {
+      this.content_empty_error = false;
+      this.content_limit_error = false;
     }
   },
   computed: {

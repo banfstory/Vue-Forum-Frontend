@@ -2,7 +2,7 @@
   <div class="comment-item">
     <div v-if="dotpopup" class="dot-popup" ref="modify-popup">
       <template v-if="dotmodify">
-        <div v-on:click="dotpopup=false; updatecomment=true; currentdata=comment.content" class="flex"> <i class="far fa-edit"> </i> <span> Update </span> </div>
+        <div v-on:click="showUpdateComment()" class="flex"> <i class="far fa-edit"> </i> <span> Update </span> </div>
         <div v-on:click="dotpopup=false; delete_comment()" class="flex"> <i class="fas fa-trash-alt"> </i> <span> Delete </span> </div>
       </template>
       <template v-else>
@@ -27,17 +27,21 @@
     <div v-if="token" class="comment-footer">
       <div v-on:click="addreply=true" class="prompt-reply"> REPLY </div>
       <div v-if="addreply" class="comment-reply-popup-g">
+        <div v-if="reply_content_empty_error" class="error-input">Content cannot be empty</div>
+        <div v-else-if="reply_content_limit_error" class="error-input">Content field must not exceed 20000 characters</div>
         <textarea placeholder="Add a reply" v-model="input.add_reply"></textarea>
         <div class="reply-comment-buttons-g">
           <button v-on:click="reply_to_comment()"> Reply </button>
-          <button v-on:click="addreply=false"> Cancel </button>
+          <button v-on:click="addreply=false; input.add_reply=''; reply_resetValidation()"> Cancel </button>
         </div>
       </div>
       <div v-if="updatecomment" class="comment-reply-popup-g">
+        <div v-if="comment_content_empty_error" class="error-input">Content cannot be empty</div>
+        <div v-else-if="comment_content_limit_error" class="error-input">Content field must not exceed 20000 characters</div>
         <textarea placeholder="Update comment" v-model="input.update_comment"> </textarea>
         <div class="reply-comment-buttons-g">
           <button v-on:click="update_comment()"> Update </button>
-          <button v-on:click="updatecomment=false"> Cancel </button>
+          <button v-on:click="updatecomment=false; comment_resetValidation()"> Cancel </button>
         </div>
       </div>
     </div>
@@ -73,6 +77,10 @@ export default {
       dotmodify: false,
       addreply: false,
       updatecomment: false,
+      reply_content_empty_error: false,
+      reply_content_limit_error: false,
+      comment_content_empty_error: false,
+      comment_content_limit_error: false,
     }
   },
   methods: {
@@ -85,8 +93,13 @@ export default {
       this.$emit('removeComment', this.comment);
     },
     reply_to_comment() {
+      this.reply_resetValidation();
       let content = this.input.add_reply.trim();
-      if(content.length > 0) {
+      if(content.length == 0) {
+        this.reply_content_empty_error = true;
+      } else if(content.length > 20000) {
+        this.reply_content_limit_error = true;
+      } else {
         axios.post(`${this.domain_name_api}reply`, { 'content' : content, 'comment_id' : this.comment.id }, { headers: { 'x-access-token' : this.token } }).then((response) => {
           this.comment.num_of_reply += 1;
           this.input.add_reply = '';
@@ -99,8 +112,13 @@ export default {
       }
     },
     update_comment() {
+      this.comment_resetValidation();
       let content = this.input.update_comment.trim();
-      if(content.length > 0) {
+      if(content.length == 0) {
+        this.comment_content_empty_error = true;
+      } else if(content.length > 20000) {
+        this.comment_content_limit_error = true;
+      } else {
         axios.put(`${this.domain_name_api}comment/${this.comment.id}`, { 'content' : content }, { headers: { 'x-access-token' : this.token } }).then(() => {
           this.comment.content = content;
           this.input.update_comment = '';
@@ -136,6 +154,19 @@ export default {
     },
     popup_comment() {
       bus.$emit('dotpopup', this);
+    },
+    showUpdateComment() {
+      this.dotpopup = false; 
+      this.updatecomment = true; 
+      this.input.update_comment = this.comment.content;
+    },
+    reply_resetValidation() {
+      this.reply_content_empty_error = false;
+      this.reply_content_limit_error = false;
+    },
+    comment_resetValidation() {
+      this.comment_content_empty_error = false;
+      this.comment_content_limit_error = false;
     }
   },
   computed: {
