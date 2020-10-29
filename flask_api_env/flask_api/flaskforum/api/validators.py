@@ -30,9 +30,9 @@ class input_validator:
 
     @classmethod
     def validForumAbout(self, about, errors):
-        pattern = r'^.{1,30000}$'
+        pattern = r'^.{0,30000}$'
         if not re.search(pattern, about):
-            errors.update({'forum_name_errors' : 'Forum about must be have atleast 1 character and must not exceed 30000 characters'})
+            errors.update({'forum_name_errors' : 'Forum about must not exceed 30000 characters'})
 
     @classmethod
     #Post validation
