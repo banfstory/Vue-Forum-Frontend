@@ -24,12 +24,6 @@ Authorization:
 
 api = Blueprint('api', __name__)
 
-@api.route('/api/email/<string:email>', methods=['GET'])
-def check_email(email):
-    errors = dict()
-    input_validator.validEmail(email, errors)
-    return jsonify(errors)
-
 # TOKEN
 # give token to user that login with valid details
 @api.route('/api/login', methods=['GET'])
@@ -68,9 +62,14 @@ def token_required(verify_token):  # verify token that has been given
 def api_create_post(c_user):
     data = request.get_json()
     try:
-        title = data['title']
-        content = data['content']
+        title = data['title'].strip()
+        content = data['content'].strip()
         forum_id = data['forum_id']
+        errors = dict()
+        input_validator.validPostTitle(title, errors)
+        input_validator.validPostContent(content, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     forum = Forum.query.get(forum_id)
@@ -88,8 +87,12 @@ def api_create_post(c_user):
 def api_create_comment(c_user):
     data = request.get_json()
     try:
-        content = data['content']
+        content = data['content'].strip()
         post_id = data['post_id']
+        errors = dict()
+        input_validator.validCommentContent(content, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     post = Post.query.get(post_id)
@@ -108,8 +111,12 @@ def api_create_comment(c_user):
 def api_create_reply(c_user):
     data = request.get_json()
     try:
-        content = data['content']
+        content = data['content'].strip()
         comment_id = data['comment_id']
+        errors = dict()
+        input_validator.validReplyContent(content, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     comment = Comment.query.get(comment_id)
@@ -128,8 +135,13 @@ def api_create_reply(c_user):
 def api_create_forum(c_user):
     data = request.get_json()
     try:
-        name = data['name']
-        about = data['about']
+        name = data['name'].strip()
+        about = data['about'].strip()
+        errors = dict()
+        input_validator.validForumName(name, errors)
+        input_validator.validForumAbout(about, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     exist = db.session.query(Forum).filter(db.func.lower(Forum.name)==db.func.lower(name)).first()
@@ -145,9 +157,15 @@ def api_create_forum(c_user):
 def api_register():
     data = request.get_json()
     try:
-        username = data['username']
-        email = data['email']
+        username = data['username'].strip()
+        email = data['email'].strip()
         password = data['password']
+        errors = dict()
+        input_validator.validUsername(username, errors)
+        input_validator.validEmail(email, errors)
+        input_validator.validPassword(password, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
         user = db.session.query(User).filter(db.func.lower(User.username)==db.func.lower(username)).first()
         if not user:
             hash_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -221,6 +239,11 @@ def api_update_post(c_user, id):
     try:
         title = data['title'].strip()
         content = data['content'].strip()
+        errors = dict()
+        input_validator.validPostTitle(title, errors)
+        input_validator.validPostContent(content, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     post.title = title
@@ -238,6 +261,10 @@ def api_update_comment(c_user, id):
     data = request.get_json()
     try:
         content = data['content'].strip()
+        errors = dict()
+        input_validator.validCommentContent(content, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     comment.content = content
@@ -254,6 +281,10 @@ def api_update_reply(c_user, id):
     data = request.get_json()
     try:
         content = data['content'].strip()
+        errors = dict()
+        input_validator.validReplyContent(content, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     reply.content = content
@@ -270,6 +301,10 @@ def api_update_forum(c_user, id):
     data = request.get_json()
     try:
         about = data['about'].strip()
+        errors = dict()
+        input_validator.validForumAbout(about, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
     except:
         return jsonify({'message': 'Invalid request'}), 400
     forum.about = about
@@ -282,11 +317,16 @@ def api_update_forum(c_user, id):
 def api_update_account(c_user):
     data = request.get_json()
     try:
-        username = data['username']
+        username = data['username'].strip()
         user = db.session.query(User).filter(db.func.lower(User.username)==db.func.lower(username)).first()
         if(username.lower() != c_user.username.lower() and user):
             return jsonify({'error' : {'username' : 'User already exists'}}), 401
-        email = data['email']
+        email = data['email'].strip()
+        errors = dict()
+        input_validator.validUsername(username, errors)
+        input_validator.validEmail(email, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
         c_user.username = username
         c_user.email = email
         db.session.commit()
@@ -302,6 +342,10 @@ def api_change_password(c_user):
     try:
         old_password = data['old_password']
         new_password = data['new_password']
+        errors = dict()
+        input_validator.validPassword(new_password, errors)
+        if len(errors) > 0:
+            return jsonify(errors)
         if bcrypt.check_password_hash(c_user.password, old_password):
             hash_new_pass = bcrypt.generate_password_hash(new_password).decode('utf-8')
             c_user.password = hash_new_pass
