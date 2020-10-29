@@ -8,7 +8,7 @@ class input_validator:
         pattern = r'^([\w\.-]+)@([a-zA-Z-]+).([a-zA-Z]{2,10})(\.[a-zA-Z]{2,10})$'
         if len(email) > 254 or not re.search(pattern, email):
             errors.update({'email_errors' : 'Invalid email address. Email must not exceed 254 characters'})
-
+            
     @classmethod
     def validPassword(self, password, errors):
         pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~])[a-zA-Z\d!"#$%&\'\\()*+,-./:;<=>?@[\\\]^_`{|}~]{8,128}$'

@@ -14,6 +14,7 @@
           <h2> Update Account </h2>
           <label> About </label>
           <textarea v-model="forum.about" type="text"> </textarea>
+          <div v-if="about_limit_error" class="error-input">About field must not exceed 30000 characters</div>
           <label> Image Upload </label>
           <div v-if="image_invalid_error" class="error-input">File must have the extension .jpg or .png</div>
           <input type="file" name="image_file" ref="forum_picture">
@@ -49,6 +50,7 @@ export default {
       forum: {},
       loading: false,
       image_invalid_error: false,
+      about_limit_error: false,
       popup: false
     }
   },
@@ -80,11 +82,16 @@ export default {
 		},
     update_forum() {
       this.resetValidation();
-      axios.put(`${this.domain_name_api}forum/${this.forum.id}`, {'about' : this.forum.about}, { headers: { 'x-access-token' : this.token } }).then(response => {
-        this.change_forum_image();
-        this.about = response.data.forum.about;
-        bus.$emit('show_hide_notify', 'Forum updated');
-      });
+      let about = this.forum.about.trim();
+      if(about.length > 30000) {
+        this.about_limit_error = true;
+      } else {
+        axios.put(`${this.domain_name_api}forum/${this.forum.id}`, {'about' : about}, { headers: { 'x-access-token' : this.token } }).then(response => {
+          this.change_forum_image();
+          this.about = response.data.forum.about;
+          bus.$emit('show_hide_notify', 'Forum updated');
+        });
+      }
     },
     forum_results() {
       this.loading = false;
@@ -97,7 +104,8 @@ export default {
       });
     },
     resetValidation() {
-			this.image_invalid_error = false;
+      this.image_invalid_error = false;
+      this.about_limit_error = false;
 		}
   },
   computed: {
