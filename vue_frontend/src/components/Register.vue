@@ -76,7 +76,6 @@ export default {
       if(!validation_error){
         axios.post(`${this.domain_name_api}register`, {'username' : username, 'email' : email, 'password' : password}).then(() => {
           this.$router.push('/').catch(() => {});
-          document.body.style = "overflow: scroll";
           this.close_popup();
           bus.$emit('show_hide_notify', 'Register successful'); 
         }).catch(err => {
@@ -88,6 +87,7 @@ export default {
       }  
     },
     close_popup() {
+      document.body.style = "overflow: scroll";
       bus.$emit('close_popup');
     },
     switch_auth_popup() {

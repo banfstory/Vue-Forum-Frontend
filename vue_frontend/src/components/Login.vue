@@ -60,7 +60,6 @@ export default {
           bus.$emit('loaded'); // ensure router-vew is loaded when user login
           this.$router.push('/').catch(() => {});
           bus.$emit('show_hide_notify', 'Login successful');
-          document.body.style = "overflow: scroll";
           this.close_popup();
         }).catch(err => {
           let error = err.response.data.error;
