@@ -1,5 +1,5 @@
 # Vue-Forum-Frontend
-The Single Page Application (SPA) website allows users to create their own forums which gives a place for other users to create post
+The Single Page Application (SPA) website allows users to create their own forums which gives a place for other users to create post which is built using Vuejs for the frontend and Flask for the REST API backend which ensures quicker load times as only certain components of the page is updated.
 
 For this website, it is required that two local servers are running at the same time, one will be used for the Restful Flask API and the other will be used for Vue frontend. 
 
