@@ -1,6 +1,6 @@
 # Vue-Forum-Frontend
 
-For this website, it is required that two local servers are running at the same time, one will be used for the Restful Flask API and the other will be used for Vue Js frontend. 
+For this website, it is required that two local servers are running at the same time, one will be used for the Restful Flask API and the other will be used for Vue frontend. 
 
 FLASK RESTFUL API INSTRUCTIONS:
 To run the Flask API, it needs to run on a local server and it will be running the application from a virtual environment so that all packages will be already pre-installed within the whole folder itself.
