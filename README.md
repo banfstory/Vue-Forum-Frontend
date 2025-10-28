@@ -1,27 +1,40 @@
-# Vue-Forum-Frontend
-The Single Page Application (SPA) website allows users to create their own forums which gives a place for other users to create post which is built using Vuejs for the frontend and Flask for the REST API backend which ensures quicker load times as only certain components of the page is updated.
+# 🧭 Vue-Forum-Frontend
+A Single Page Application (SPA) that allows users to create and participate in forums.
+Each forum hosts user-generated posts and discussions.
+Built using Vue for the frontend and a Flask REST API backend, ensuring fast load times by updating only necessary components.
 
-For this website, it is required that two local servers are running at the same time, one will be used for the Restful Flask API and the other will be used for Vue frontend. 
+## ⚙️ Requirements
+- Node.js v16.20.2
+> **Note:** Using newer Node versions may cause dependency or build issues.  
+> You can manage Node versions using [nvm](https://github.com/nvm-sh/nvm) or [nvm-windows](https://github.com/coreybutler/nvm-windows).
+- Running instance of the Flask REST API backend: [Flask-Rest-API](https://github.com/banfstory/Flask-Rest-API)
 
-FLASK RESTFUL API INSTRUCTIONS:
-To run the Flask API, it needs to run on a local server and it will be running the application from a virtual environment so that all packages will be already pre-installed within the whole folder itself. The flask api is on a seperate repo: https://github.com/banfstory/Flask-REST-API.
+## 🛠️ Getting Started
+### 1. Run the Flask Backend
+Start your Flask REST API server in a separate terminal. <br>
+Backend repository: https://github.com/banfstory/Flask-Rest-API
 
-To run the virtual environment do the following (instructions for windows OS only), start with going into command prompt:
+### 2. Run the Vue Frontend
+For Windows:
+```bash
+cd vue_frontend
+npm install
+npm run serve
+```
+This launches the app in development mode on http://localhost:8080.
+If the `node_modules` folder doesn’t exist, `npm install` will create it automatically.
 
-1. Go and download the flask api repo folder (https://github.com/banfstory/Flask-REST-API)
-2. Enter 'venv\Scripts\activate' to activate the virtual environment
-3. Go to the following path: flask_api (folder)
-4. Enter 'python run.py' to run the local server
+## ⚙️ API URL
+The frontend connects to the REST API using the following default URL:
+```javascript
+// File: vue_frontend\src\main.js (within Vue.mixin)
+domain_name_api: 'http://127.0.0.1:5000/api/'
+```
+You can leave it as is if your backend runs locally on port 5000, or update it to match your own backend URL.
 
-If you want to change the port number for the localhost, go to the following path: flask_api (folder) > run.py . Look for the code 'app.run(debug=True, port=5000)' on line 14 and change the 'port' parameter 
-(localhost uses port number 5000 by default)
-WARNING: If you change the port number for the FLASK API port number, you will also need to change the api http request url with a different port number in order for the vue frontend to call the correct API server. To change this, go to the path:
-vue_frontend (folder) > src (folder) > main.js. Look for the code 'domain_name_api: 'http://127.0.0.1:5000/api/' on line 13 and change the url's port to reflect the changes made in the port for the API server.
+## 📝 About the Backend
+This frontend connects to a RESTful Flask backend, which handles data storage, authentication, and API logic.
+Backend repository: [Flask-Rest-API](https://github.com/banfstory/Flask-Rest-API)
 
-
-VUE JS FRONTEND INSTRUCTIONS:
-To run the local server of the Vue js website do the following (instructions for windows OS only), start with going into command prompt:
-
-1. Go to the 'vue_frontend' folder
-2. Enter 'npm install' to install all the modules within this folder (check if the folder 'node_modules' exist within the 'vue_frontend' folder)
-3. Enter 'npm run serve -- --port 8080' to run the local server on port 8080 (you can change the port number to whatever you want)
+## 📜 License
+This project is licensed under the [MIT License](./LICENSE).
