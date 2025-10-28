@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     log_out() {
-      this.deleteAllCookies();
+      localStorage.removeItem('token');
       this.token = null;
       this.user = {};
       this.num_of_followers = 0;
@@ -106,15 +106,6 @@ export default {
       bus.$emit('erase_user', {});
       bus.$emit('show_hide_notify', 'Logged out');
       this.$router.push('/').catch(() => {});
-    },
-    deleteAllCookies() {
-      let cookies = document.cookie.split(";");
-      let currTime = new Date();
-      currTime.setMonth(currTime.getMonth() - 1);
-      for(let i = 0; i < cookies.length; i++) {
-        let name = cookies[i].split("=")[0];
-        document.cookie = `${name}=; expires=${currTime.toUTCString()}`;
-      }
     },
     toggle_profile() {  /* popup to show navigation links when user profile image is clicked */
       this.profile_nav = !this.profile_nav;

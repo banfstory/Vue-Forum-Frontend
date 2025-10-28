@@ -28,10 +28,10 @@ export default {
   },
   methods: {
     initApp() {
-      // if user has a cookie with the web token, then they have already authenticated before
-      if(document.cookie.indexOf('token') !== -1) {
-        let arr_token = document.cookie.split(';').map(cookie => cookie.split('='));
-        this.token = arr_token[0][1];
+      // if user has token property in localStorage, then they have already authenticated before
+      const token = localStorage.getItem('token');
+      if(token) {
+        this.token = token;
         let user = jwtdecode(this.token);
         axios.get(`${this.domain_name_api}user?id=${user.id}`).then(response => {
           this.user = response.data.user;
